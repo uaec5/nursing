@@ -1,0 +1,702 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>اختبار أسئلة التمريض - مستشفى الشيخ خليفة العام</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #0f9ba8, #0b486b);
+      color: #222;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 12px;
+    }
+
+    .quiz-container {
+      width: 100%;
+      max-width: 960px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      padding: 28px 26px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 14px;
+    }
+
+    .quiz-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0b486b;
+    }
+
+    .quiz-subtitle {
+      font-size: 0.95rem;
+      color: #6b7280;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #ecfeff;
+      color: #0f9ba8;
+      margin-top: 6px;
+      width: fit-content;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0f9ba8;
+    }
+
+    .questions-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      max-height: 60vh;
+      padding-right: 4px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .questions-wrapper::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .questions-wrapper::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border-radius: 999px;
+    }
+
+    .questions-wrapper::-webkit-scrollbar-thumb {
+      background: #cbd5f5;
+      border-radius: 999px;
+    }
+
+    .question-card {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 12px 12px 10px;
+      background: #f9fafb;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+    }
+
+    .question-card:hover {
+      border-color: #0f9ba8;
+      background: #f0fdff;
+      transform: translateY(-1px);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .question-text {
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .question-meta {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .option-label:hover {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      transform: translateY(-0.5px);
+    }
+
+    .option-label input[type="radio"] {
+      accent-color: #0f9ba8;
+      cursor: pointer;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .option-label.correct {
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #166534;
+    }
+
+    .option-label.incorrect {
+      background: #fef2f2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+
+    .question-footer {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      display: none;
+    }
+
+    .question-footer.visible {
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .buttons-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 8px 18px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: #0f9ba8;
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(15, 155, 168, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #0b7480;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(11, 116, 128, 0.45);
+    }
+
+    .btn-ghost {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-ghost:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .score-box {
+      font-size: 0.9rem;
+      color: #374151;
+      background: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 170px;
+      justify-content: center;
+    }
+
+    .score-value {
+      font-weight: 700;
+      color: #0f9ba8;
+    }
+
+    .status-tag {
+      font-size: 0.78rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #4b5563;
+    }
+
+    .status-tag.good {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-tag.medium {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .status-tag.low {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .quiz-container {
+        padding: 20px 16px 16px;
+        border-radius: 14px;
+      }
+
+      .quiz-title {
+        font-size: 1.2rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .buttons-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .score-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="quiz-container">
+      <header class="quiz-header">
+        <div>
+          <h1 class="quiz-title">اختبار أسئلة التمريض</h1>
+          <p class="quiz-subtitle">
+            أسئلة عملية تغطي الطوارئ والباطنية والجراحة والأطفال والنساء والولادة وغسيل الكلى وغيرها
+          </p>
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          وضع التدريب للمقابلات
+        </div>
+      </header>
+
+      <main class="questions-wrapper" id="questionsWrapper">
+        <!-- الأسئلة تُضاف هنا عبر JavaScript -->
+      </main>
+
+      <section class="controls">
+        <div class="buttons-group">
+          <button id="submitBtn" class="btn btn-primary">
+            تصحيح الاختبار
+          </button>
+          <button id="resetBtn" class="btn btn-ghost">
+            إعادة المحاولة
+          </button>
+        </div>
+        <div class="score-box">
+          الدرجة:
+          <span class="score-value" id="scoreValue">0 / 0</span>
+          <span class="status-tag" id="statusTag">ابدأ الاختبار</span>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        اختر الإجابات الصحيحة ثم اضغط على "تصحيح الاختبار" لرؤية الدرجة والتغذية الراجعة
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "ما هي أول خطوة عند استقبال مريض في قسم الطوارئ؟",
+        type: "الطوارئ",
+        options: [
+          "تعبئة ملف المريض في الاستقبال",
+          "قياس العلامات الحيوية وتقييم ABC بسرعة",
+          "طلب تحاليل مخبرية كاملة",
+          "الاتصال بأهل المريض مباشرة"
+        ],
+        correctIndex: 1,
+        note: "تقييم مجرى الهواء والتنفس والدورة الدموية أول أولوية في الطوارئ"
+      },
+      {
+        text: "ما الهدف من نظام الفرز Triage في الطوارئ؟",
+        type: "الطوارئ",
+        options: [
+          "تحديد مواعيد المتابعة",
+          "فرز المرضى حسب خطورة الحالة وأولوية العلاج",
+          "ترتيب الملفات في الأرشيف",
+          "تحديد تكلفة علاج المريض"
+        ],
+        correctIndex: 1,
+        note: "الفرز يضمن أن الحالات الحرجة تُرى أولاً"
+      },
+      {
+        text: "مريض ضغطه مرتفع جداً في قسم الباطنية، أول تصرف صحيح هو",
+        type: "الباطنية",
+        options: [
+          "إعطاء أي دواء خافض للضغط متوفر",
+          "إعادة قياس الضغط والتأكد ثم إبلاغ الطبيب",
+          "إخراج المريض للمشي",
+          "تجاهل القراءة إذا المريض لا يشتكي"
+        ],
+        correctIndex: 1,
+        note: "يجب التأكد من القياس ثم إبلاغ الطبيب لوضع الخطة"
+      },
+      {
+        text: "من علامات الجفاف عند المريض",
+        type: "الباطنية",
+        options: [
+          "زيادة الشهية",
+          "هبوط الضغط وتسارع النبض وقلة البول",
+          "زيادة الوزن فجأة",
+          "انخفاض الحرارة"
+        ],
+        correctIndex: 1,
+        note: "الجفاف يؤثر على الضغط والنبض وإنتاج البول"
+      },
+      {
+        text: "ما أهم علامة مبكرة لنزيف بعد عملية جراحية؟",
+        type: "الجراحة",
+        options: [
+          "زيادة الشهية",
+          "هبوط الضغط مع نبض سريع وشحوب",
+          "نوم عميق",
+          "حرارة خفيفة"
+        ],
+        correctIndex: 1,
+        note: "هبوط الضغط والنبض السريع مع تغيّر الجرح مؤشرات نزيف"
+      },
+      {
+        text: "في العناية المركزة، مقياس GCS يستخدم لـ",
+        type: "العناية المركزة",
+        options: [
+          "قياس مستوى الألم",
+          "قياس مستوى الوعي",
+          "قياس مستوى السكر",
+          "قياس مستوى الصوديوم"
+        ],
+        correctIndex: 1,
+        note: "GCS يقيم العين والكلام والحركة لتحديد درجة الوعي"
+      },
+      {
+        text: "أهم خطوة عند التعامل مع مريض على جهاز تنفس صناعي",
+        type: "العناية المركزة",
+        options: [
+          "إطفاء الجهاز عند كل زيارة",
+          "متابعة الإعدادات والـ SpO2 ومجرى الهواء باستمرار",
+          "نزع الأنبوب للتأكد منه",
+          "إعطاء ماء فموي كثير"
+        ],
+        correctIndex: 1,
+        note: "مراقبة الجهاز والأنبوب والأكسجة ضرورية لسلامة المريض"
+      },
+      {
+        text: "جرعة الأدوية للأطفال غالباً تُحسب بناء على",
+        type: "الأطفال",
+        options: [
+          "العمر فقط",
+          "الوزن بوحدة كيلوجرام",
+          "الجنس",
+          "وقت تناول الوجبة"
+        ],
+        correctIndex: 1,
+        note: "أغلب أدوية الأطفال تعتمد على وزن الطفل mg/kg"
+      },
+      {
+        text: "طفل خائف من الحقنة ويبدأ بالبكاء، التصرف الأنسب هو",
+        type: "الأطفال",
+        options: [
+          "التهديد ليلتزم",
+          "الصراخ عليه ليهدأ",
+          "تهدئته وشرح الإجراء وطلب دعم أحد الوالدين",
+          "تأجيل التطعيم إلى أجل غير مسمى"
+        ],
+        correctIndex: 2,
+        note: "الطمأنة والتواصل الجيد يقللان الخوف"
+      },
+      {
+        text: "من العلامات الكلاسيكية لـ preeclampsia عند الحامل",
+        type: "النساء والولادة",
+        options: [
+          "ضغط منخفض وزيادة التبول",
+          "ضغط مرتفع مع زلال في البول وانتفاخ",
+          "حرارة عالية فقط",
+          "سعال شديد"
+        ],
+        correctIndex: 1,
+        note: "ارتفاع الضغط مع البروتين في البول ووجود وذمة علامات مهمة"
+      },
+      {
+        text: "مريض غسيل كلى جاء بضغط منخفض أثناء الجلسة، أول خطوة هي",
+        type: "غسيل الكلى",
+        options: [
+          "زيادة سرعة سحب السوائل",
+          "إيقاف السحب ورفع القدمين وإبلاغ الطبيب",
+          "إغلاق الجهاز فوراً دون تقييم",
+          "إعطاؤه أكل مالح كثير"
+        ],
+        correctIndex: 1,
+        note: "انخفاض الضغط أثناء الغسيل يحتاج تقليل أو إيقاف السحب ودعم الدورة الدموية"
+      },
+      {
+        text: "في العيادات الخارجية، مراجع غاضب بسبب الانتظار الطويل، ماذا تفعل؟",
+        type: "العيادات الخارجية",
+        options: [
+          "الجدال معه أمام الآخرين",
+          "تجاهله تماماً",
+          "الاستماع له بهدوء وشرح سبب التأخير وتنظيم دوره",
+          "إخراجه من العيادة"
+        ],
+        correctIndex: 2,
+        note: "التواصل الهادئ والشرح يقللان التوتر ويحافظان على النظام"
+      },
+      {
+        text: "إجراء أساسي قبل إرسال مريض لتصوير MRI",
+        type: "الأشعة",
+        options: [
+          "إعطاؤه طعاماً ثقيلاً",
+          "التأكد من عدم وجود أجسام معدنية أو أجهزة مزروعة مانعة",
+          "منع الماء تماماً",
+          "إيقاف جميع الأدوية"
+        ],
+        correctIndex: 1,
+        note: "الأجسام المعدنية تمثل خطراً في جهاز الرنين"
+      },
+      {
+        text: "الطريقة الصحيحة للتأكد من صحة إعطاء الدواء هي قاعدة",
+        type: "سلامة الدواء",
+        options: [
+          "ثلاثة حقوق",
+          "خمسة حقوق: المريض والدواء والجرعة والوقت والطريق الصحيح",
+          "اسم المريض والدواء فقط",
+          "اسم الدواء والوقت فقط"
+        ],
+        correctIndex: 1,
+        note: "قاعدة الخمسة حقوق أساس سلامة الدواء"
+      },
+      {
+        text: "أفضل تصرف عند اكتشاف خطأ في إعطاء دواء لمريض",
+        type: "سلامة المريض",
+        options: [
+          "إخفاء الخطأ حتى لا تحدث مشكلة",
+          "إبلاغ الطبيب والمشرف فوراً وتوثيق الحادث وتصحيح الوضع",
+          "إلقاء الدواء في النفايات دون إخبار أحد",
+          "إخبار المريض فقط"
+        ],
+        correctIndex: 1,
+        note: "الشفافية والتبليغ الفوري شرط أساسي لسلامة المريض وجودة العمل"
+      }
+    ]
+
+    const questionsWrapper = document.getElementById("questionsWrapper")
+    const scoreValue = document.getElementById("scoreValue")
+    const statusTag = document.getElementById("statusTag")
+    const submitBtn = document.getElementById("submitBtn")
+    const resetBtn = document.getElementById("resetBtn")
+
+    function renderQuestions() {
+      questionsWrapper.innerHTML = ""
+      questions.forEach((q, index) => {
+        const card = document.createElement("article")
+        card.className = "question-card"
+        card.dataset.index = index
+
+        const header = document.createElement("div")
+        header.className = "question-header"
+
+        const text = document.createElement("div")
+        text.className = "question-text"
+        text.textContent = `${index + 1}. ${q.text}`
+
+        const meta = document.createElement("div")
+        meta.className = "question-meta"
+        meta.textContent = q.type
+
+        header.appendChild(text)
+        header.appendChild(meta)
+
+        const optionsContainer = document.createElement("div")
+        optionsContainer.className = "options"
+
+        q.options.forEach((opt, optIndex) => {
+          const label = document.createElement("label")
+          label.className = "option-label"
+
+          const input = document.createElement("input")
+          input.type = "radio"
+          input.name = `q${index}`
+          input.value = optIndex
+
+          const spanText = document.createElement("span")
+          spanText.className = "option-text"
+          spanText.textContent = opt
+
+          label.appendChild(input)
+          label.appendChild(spanText)
+          optionsContainer.appendChild(label)
+        })
+
+        const footer = document.createElement("div")
+        footer.className = "question-footer"
+        footer.id = `feedback-${index}`
+        footer.textContent = `ملاحظة: ${q.note}`
+
+        card.appendChild(header)
+        card.appendChild(optionsContainer)
+        card.appendChild(footer)
+        questionsWrapper.appendChild(card)
+      })
+
+      scoreValue.textContent = `0 / ${questions.length}`
+      statusTag.textContent = "ابدأ الاختبار"
+      statusTag.className = "status-tag"
+    }
+
+    function gradeQuiz() {
+      let score = 0
+
+      questions.forEach((q, index) => {
+        const card = questionsWrapper.querySelector(`.question-card[data-index="${index}"]`)
+        const options = card.querySelectorAll(".option-label")
+        const feedback = document.getElementById(`feedback-${index}`)
+
+        options.forEach((label) => {
+          label.classList.remove("correct", "incorrect")
+        })
+
+        let selectedIndex = null
+        options.forEach((label, optIdx) => {
+          const input = label.querySelector("input")
+          if (input.checked) {
+            selectedIndex = optIdx
+          }
+        })
+
+        if (selectedIndex === q.correctIndex) {
+          score++
+        }
+
+        options.forEach((label, optIdx) => {
+          if (optIdx === q.correctIndex) {
+            label.classList.add("correct")
+          } else if (optIdx === selectedIndex && selectedIndex !== q.correctIndex) {
+            label.classList.add("incorrect")
+          }
+        })
+
+        if (feedback) {
+          feedback.classList.add("visible")
+        }
+      })
+
+      scoreValue.textContent = `${score} / ${questions.length}`
+
+      const ratio = score / questions.length
+      if (ratio >= 0.8) {
+        statusTag.textContent = "ممتاز – جاهز للمقابلة"
+        statusTag.className = "status-tag good"
+      } else if (ratio >= 0.5) {
+        statusTag.textContent = "جيد – تحتاج بعض المراجعة"
+        statusTag.className = "status-tag medium"
+      } else {
+        statusTag.textContent = "درجة ضعيفة – راجع الأسئلة مرة أخرى"
+        statusTag.className = "status-tag low"
+      }
+    }
+
+    function resetQuiz() {
+      const inputs = questionsWrapper.querySelectorAll("input[type='radio']")
+      inputs.forEach((input) => {
+        input.checked = false
+        input.disabled = false
+      })
+
+      const labels = questionsWrapper.querySelectorAll(".option-label")
+      labels.forEach((label) => {
+        label.classList.remove("correct", "incorrect")
+      })
+
+      const feedbacks = questionsWrapper.querySelectorAll(".question-footer")
+      feedbacks.forEach((fb) => fb.classList.remove("visible"))
+
+      scoreValue.textContent = `0 / ${questions.length}`
+      statusTag.textContent = "تمت إعادة الاختبار"
+      statusTag.className = "status-tag"
+    }
+
+    submitBtn.addEventListener("click", gradeQuiz)
+    resetBtn.addEventListener("click", resetQuiz)
+
+    renderQuestions()
+  </script>
+</body>
+</html>
