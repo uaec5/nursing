@@ -1,702 +1,382 @@
-```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>اختبار أسئلة التمريض - مستشفى الشيخ خليفة العام</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Research: Chapter 1 Cheat Sheet</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #212529;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #0f9ba8, #0b486b);
-      color: #222;
-    }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 32px 12px;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 20px;
+        }
 
-    .quiz-container {
-      width: 100%;
-      max-width: 960px;
-      background: #ffffff;
-      border-radius: 18px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
-      padding: 28px 26px 26px;
-      position: relative;
-      overflow: hidden;
-    }
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.5em;
+        }
 
-    .quiz-header {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 18px;
-      border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 14px;
-    }
+        h2 {
+            color: var(--secondary-color);
+            border-left: 5px solid var(--accent-color);
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            background-color: var(--light-bg);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
 
-    .quiz-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #0b486b;
-    }
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
 
-    .quiz-subtitle {
-      font-size: 0.95rem;
-      color: #6b7280;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: #ecfeff;
-      color: #0f9ba8;
-      margin-top: 6px;
-      width: fit-content;
-    }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
 
-    .badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #0f9ba8;
-    }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
 
-    .questions-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 6px;
-      max-height: 60vh;
-      padding-right: 4px;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
-    .questions-wrapper::-webkit-scrollbar {
-      width: 6px;
-    }
+        tr:hover {
+            background-color: #e9ecef;
+        }
 
-    .questions-wrapper::-webkit-scrollbar-track {
-      background: #f3f4f6;
-      border-radius: 999px;
-    }
+        .arabic {
+            direction: rtl;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            color: #555;
+            font-size: 0.95em;
+            display: block;
+            margin-top: 5px;
+        }
 
-    .questions-wrapper::-webkit-scrollbar-thumb {
-      background: #cbd5f5;
-      border-radius: 999px;
-    }
+        .process-step {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
 
-    .question-card {
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      padding: 12px 12px 10px;
-      background: #f9fafb;
-      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
-    }
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
 
-    .question-card:hover {
-      border-color: #0f9ba8;
-      background: #f0fdff;
-      transform: translateY(-1px);
-    }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
 
-    .question-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      gap: 8px;
-    }
+        .term-box {
+            background-color: white;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
-    .question-text {
-      font-size: 0.96rem;
-      font-weight: 600;
-      color: #111827;
-    }
+        .term-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
 
-    .question-meta {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      white-space: nowrap;
-    }
-
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .option-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 8px;
-      border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid transparent;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-    }
-
-    .option-label:hover {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-      transform: translateY(-0.5px);
-    }
-
-    .option-label input[type="radio"] {
-      accent-color: #0f9ba8;
-      cursor: pointer;
-    }
-
-    .option-text {
-      flex: 1;
-    }
-
-    .option-label.correct {
-      background: #ecfdf3;
-      border-color: #22c55e;
-      color: #166534;
-    }
-
-    .option-label.incorrect {
-      background: #fef2f2;
-      border-color: #ef4444;
-      color: #991b1b;
-    }
-
-    .question-footer {
-      margin-top: 6px;
-      font-size: 0.78rem;
-      color: #6b7280;
-      display: none;
-    }
-
-    .question-footer.visible {
-      display: block;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .buttons-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border-radius: 999px;
-      padding: 8px 18px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.92rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
-      outline: none;
-    }
-
-    .btn-primary {
-      background: #0f9ba8;
-      color: #ffffff;
-      box-shadow: 0 10px 20px rgba(15, 155, 168, 0.4);
-    }
-
-    .btn-primary:hover {
-      background: #0b7480;
-      transform: translateY(-1px);
-      box-shadow: 0 14px 24px rgba(11, 116, 128, 0.45);
-    }
-
-    .btn-ghost {
-      background: #f3f4f6;
-      color: #374151;
-    }
-
-    .btn-ghost:hover {
-      background: #e5e7eb;
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    .score-box {
-      font-size: 0.9rem;
-      color: #374151;
-      background: #f3f4f6;
-      padding: 8px 12px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 170px;
-      justify-content: center;
-    }
-
-    .score-value {
-      font-weight: 700;
-      color: #0f9ba8;
-    }
-
-    .status-tag {
-      font-size: 0.78rem;
-      padding: 2px 10px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      color: #4b5563;
-    }
-
-    .status-tag.good {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .status-tag.medium {
-      background: #fff7ed;
-      color: #9a3412;
-    }
-
-    .status-tag.low {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .footer-note {
-      margin-top: 10px;
-      font-size: 0.78rem;
-      color: #9ca3af;
-      text-align: center;
-    }
-
-    @media (max-width: 640px) {
-      .quiz-container {
-        padding: 20px 16px 16px;
-        border-radius: 14px;
-      }
-
-      .quiz-title {
-        font-size: 1.2rem;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .buttons-group {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .btn {
-        flex: 1;
-        justify-content: center;
-      }
-
-      .score-box {
-        width: 100%;
-      }
-    }
-  </style>
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            h2 {
+                background-color: transparent;
+                border-bottom: 2px solid #ccc;
+            }
+            th {
+                background-color: #ddd !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+            }
+            .step-number {
+                background-color: #333 !important;
+                -webkit-print-color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="page">
-    <div class="quiz-container">
-      <header class="quiz-header">
+
+<div class="container">
+    <header>
+        <h1>Operations Research: Chapter 1</h1>
+        <p style="color: #666; font-size: 1.1em;">Cheat Sheet & Summary | ملخص للمراجعة السريعة</p>
+    </header>
+
+    <h2>1. Definition & Origins (التعريف والنشأة)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">Concept</th>
+                <th width="40%">Definition (English)</th>
+                <th width="35%">الشرح (بالعربي)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Operations Research (OR)</strong></td>
+                <td>The scientific approach to problem-solving and decision-making for executive management.</td>
+                <td class="arabic">النهج العلمي لحل المشكلات واتخاذ القرارات للإدارة التنفيذية.</td>
+            </tr>
+            <tr>
+                <td><strong>Goal of OR</strong></td>
+                <td>To find an <span class="highlight">Optimal Solution</span> (best possible solution) under given constraints.</td>
+                <td class="arabic">الهدف هو إيجاد "الحل الأمثل" في ظل القيود الموجودة.</td>
+            </tr>
+            <tr>
+                <td><strong>Origin</strong></td>
+                <td>Started during <span class="highlight">World War II</span> (Military operations), then moved to industry (post-1950s).</td>
+                <td class="arabic">بدأت خلال الحرب العالمية الثانية (تطبيقات عسكرية)، ثم انتقلت للصناعة.</td>
+            </tr>
+            <tr>
+                <td><strong>Management Science</strong></td>
+                <td>Another name for Operations Research.</td>
+                <td class="arabic">اسم آخر لعلم بحوث العمليات (علم الإدارة).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. The OR Process Methodology (منهجية الحل)</h2>
+    <p style="margin-bottom: 15px; font-style: italic; color: red;">* Important: Memorize the order of these steps (هام: احفظ ترتيب الخطوات)</p>
+    
+    <div class="process-step">
+        <div class="step-number">1</div>
         <div>
-          <h1 class="quiz-title">اختبار أسئلة التمريض</h1>
-          <p class="quiz-subtitle">
-            أسئلة عملية تغطي الطوارئ والباطنية والجراحة والأطفال والنساء والولادة وغسيل الكلى وغيرها
-          </p>
+            <strong>Defining the Problem</strong>: Identifying the objectives and constraints clearly.
+            <span class="arabic">تعريف المشكلة: تحديد الأهداف والقيود بوضوح.</span>
         </div>
-        <div class="badge">
-          <span class="badge-dot"></span>
-          وضع التدريب للمقابلات
-        </div>
-      </header>
-
-      <main class="questions-wrapper" id="questionsWrapper">
-        <!-- الأسئلة تُضاف هنا عبر JavaScript -->
-      </main>
-
-      <section class="controls">
-        <div class="buttons-group">
-          <button id="submitBtn" class="btn btn-primary">
-            تصحيح الاختبار
-          </button>
-          <button id="resetBtn" class="btn btn-ghost">
-            إعادة المحاولة
-          </button>
-        </div>
-        <div class="score-box">
-          الدرجة:
-          <span class="score-value" id="scoreValue">0 / 0</span>
-          <span class="status-tag" id="statusTag">ابدأ الاختبار</span>
-        </div>
-      </section>
-
-      <p class="footer-note">
-        اختر الإجابات الصحيحة ثم اضغط على "تصحيح الاختبار" لرؤية الدرجة والتغذية الراجعة
-      </p>
     </div>
-  </div>
+    <div class="process-step">
+        <div class="step-number">2</div>
+        <div>
+            <strong>Developing a Model</strong>: Translating the problem into a mathematical representation.
+            <span class="arabic">بناء النموذج: تحويل المشكلة إلى تمثيل رياضي.</span>
+        </div>
+    </div>
+    <div class="process-step">
+        <div class="step-number">3</div>
+        <div>
+            <strong>Acquiring Input Data</strong>: Collecting accurate data for the variables.
+            <span class="arabic">جمع البيانات: الحصول على بيانات دقيقة للمتغيرات.</span>
+        </div>
+    </div>
+    <div class="process-step">
+        <div class="step-number">4</div>
+        <div>
+            <strong>Solving the Model</strong>: Using algorithms/software to find the solution.
+            <span class="arabic">حل النموذج: استخدام الخوارزميات لإيجاد الحل.</span>
+        </div>
+    </div>
+    <div class="process-step">
+        <div class="step-number">5</div>
+        <div>
+            <strong>Testing the Solution</strong>: Checking if the solution is realistic and valid.
+            <span class="arabic">اختبار الحل: التأكد من واقعية وصحة الحل.</span>
+        </div>
+    </div>
+    <div class="process-step">
+        <div class="step-number">6</div>
+        <div>
+            <strong>Analyzing the Results</strong>: "What-if" analysis (Sensitivity Analysis).
+            <span class="arabic">تحليل النتائج: تحليل الحساسية وتأثير تغيير المتغيرات.</span>
+        </div>
+    </div>
+    <div class="process-step">
+        <div class="step-number">7</div>
+        <div>
+            <strong>Implementation</strong>: Applying the solution in the real world.
+            <span class="arabic">التطبيق: تنفيذ الحل على أرض الواقع.</span>
+        </div>
+    </div>
 
-  <script>
-    const questions = [
-      {
-        text: "ما هي أول خطوة عند استقبال مريض في قسم الطوارئ؟",
-        type: "الطوارئ",
-        options: [
-          "تعبئة ملف المريض في الاستقبال",
-          "قياس العلامات الحيوية وتقييم ABC بسرعة",
-          "طلب تحاليل مخبرية كاملة",
-          "الاتصال بأهل المريض مباشرة"
-        ],
-        correctIndex: 1,
-        note: "تقييم مجرى الهواء والتنفس والدورة الدموية أول أولوية في الطوارئ"
-      },
-      {
-        text: "ما الهدف من نظام الفرز Triage في الطوارئ؟",
-        type: "الطوارئ",
-        options: [
-          "تحديد مواعيد المتابعة",
-          "فرز المرضى حسب خطورة الحالة وأولوية العلاج",
-          "ترتيب الملفات في الأرشيف",
-          "تحديد تكلفة علاج المريض"
-        ],
-        correctIndex: 1,
-        note: "الفرز يضمن أن الحالات الحرجة تُرى أولاً"
-      },
-      {
-        text: "مريض ضغطه مرتفع جداً في قسم الباطنية، أول تصرف صحيح هو",
-        type: "الباطنية",
-        options: [
-          "إعطاء أي دواء خافض للضغط متوفر",
-          "إعادة قياس الضغط والتأكد ثم إبلاغ الطبيب",
-          "إخراج المريض للمشي",
-          "تجاهل القراءة إذا المريض لا يشتكي"
-        ],
-        correctIndex: 1,
-        note: "يجب التأكد من القياس ثم إبلاغ الطبيب لوضع الخطة"
-      },
-      {
-        text: "من علامات الجفاف عند المريض",
-        type: "الباطنية",
-        options: [
-          "زيادة الشهية",
-          "هبوط الضغط وتسارع النبض وقلة البول",
-          "زيادة الوزن فجأة",
-          "انخفاض الحرارة"
-        ],
-        correctIndex: 1,
-        note: "الجفاف يؤثر على الضغط والنبض وإنتاج البول"
-      },
-      {
-        text: "ما أهم علامة مبكرة لنزيف بعد عملية جراحية؟",
-        type: "الجراحة",
-        options: [
-          "زيادة الشهية",
-          "هبوط الضغط مع نبض سريع وشحوب",
-          "نوم عميق",
-          "حرارة خفيفة"
-        ],
-        correctIndex: 1,
-        note: "هبوط الضغط والنبض السريع مع تغيّر الجرح مؤشرات نزيف"
-      },
-      {
-        text: "في العناية المركزة، مقياس GCS يستخدم لـ",
-        type: "العناية المركزة",
-        options: [
-          "قياس مستوى الألم",
-          "قياس مستوى الوعي",
-          "قياس مستوى السكر",
-          "قياس مستوى الصوديوم"
-        ],
-        correctIndex: 1,
-        note: "GCS يقيم العين والكلام والحركة لتحديد درجة الوعي"
-      },
-      {
-        text: "أهم خطوة عند التعامل مع مريض على جهاز تنفس صناعي",
-        type: "العناية المركزة",
-        options: [
-          "إطفاء الجهاز عند كل زيارة",
-          "متابعة الإعدادات والـ SpO2 ومجرى الهواء باستمرار",
-          "نزع الأنبوب للتأكد منه",
-          "إعطاء ماء فموي كثير"
-        ],
-        correctIndex: 1,
-        note: "مراقبة الجهاز والأنبوب والأكسجة ضرورية لسلامة المريض"
-      },
-      {
-        text: "جرعة الأدوية للأطفال غالباً تُحسب بناء على",
-        type: "الأطفال",
-        options: [
-          "العمر فقط",
-          "الوزن بوحدة كيلوجرام",
-          "الجنس",
-          "وقت تناول الوجبة"
-        ],
-        correctIndex: 1,
-        note: "أغلب أدوية الأطفال تعتمد على وزن الطفل mg/kg"
-      },
-      {
-        text: "طفل خائف من الحقنة ويبدأ بالبكاء، التصرف الأنسب هو",
-        type: "الأطفال",
-        options: [
-          "التهديد ليلتزم",
-          "الصراخ عليه ليهدأ",
-          "تهدئته وشرح الإجراء وطلب دعم أحد الوالدين",
-          "تأجيل التطعيم إلى أجل غير مسمى"
-        ],
-        correctIndex: 2,
-        note: "الطمأنة والتواصل الجيد يقللان الخوف"
-      },
-      {
-        text: "من العلامات الكلاسيكية لـ preeclampsia عند الحامل",
-        type: "النساء والولادة",
-        options: [
-          "ضغط منخفض وزيادة التبول",
-          "ضغط مرتفع مع زلال في البول وانتفاخ",
-          "حرارة عالية فقط",
-          "سعال شديد"
-        ],
-        correctIndex: 1,
-        note: "ارتفاع الضغط مع البروتين في البول ووجود وذمة علامات مهمة"
-      },
-      {
-        text: "مريض غسيل كلى جاء بضغط منخفض أثناء الجلسة، أول خطوة هي",
-        type: "غسيل الكلى",
-        options: [
-          "زيادة سرعة سحب السوائل",
-          "إيقاف السحب ورفع القدمين وإبلاغ الطبيب",
-          "إغلاق الجهاز فوراً دون تقييم",
-          "إعطاؤه أكل مالح كثير"
-        ],
-        correctIndex: 1,
-        note: "انخفاض الضغط أثناء الغسيل يحتاج تقليل أو إيقاف السحب ودعم الدورة الدموية"
-      },
-      {
-        text: "في العيادات الخارجية، مراجع غاضب بسبب الانتظار الطويل، ماذا تفعل؟",
-        type: "العيادات الخارجية",
-        options: [
-          "الجدال معه أمام الآخرين",
-          "تجاهله تماماً",
-          "الاستماع له بهدوء وشرح سبب التأخير وتنظيم دوره",
-          "إخراجه من العيادة"
-        ],
-        correctIndex: 2,
-        note: "التواصل الهادئ والشرح يقللان التوتر ويحافظان على النظام"
-      },
-      {
-        text: "إجراء أساسي قبل إرسال مريض لتصوير MRI",
-        type: "الأشعة",
-        options: [
-          "إعطاؤه طعاماً ثقيلاً",
-          "التأكد من عدم وجود أجسام معدنية أو أجهزة مزروعة مانعة",
-          "منع الماء تماماً",
-          "إيقاف جميع الأدوية"
-        ],
-        correctIndex: 1,
-        note: "الأجسام المعدنية تمثل خطراً في جهاز الرنين"
-      },
-      {
-        text: "الطريقة الصحيحة للتأكد من صحة إعطاء الدواء هي قاعدة",
-        type: "سلامة الدواء",
-        options: [
-          "ثلاثة حقوق",
-          "خمسة حقوق: المريض والدواء والجرعة والوقت والطريق الصحيح",
-          "اسم المريض والدواء فقط",
-          "اسم الدواء والوقت فقط"
-        ],
-        correctIndex: 1,
-        note: "قاعدة الخمسة حقوق أساس سلامة الدواء"
-      },
-      {
-        text: "أفضل تصرف عند اكتشاف خطأ في إعطاء دواء لمريض",
-        type: "سلامة المريض",
-        options: [
-          "إخفاء الخطأ حتى لا تحدث مشكلة",
-          "إبلاغ الطبيب والمشرف فوراً وتوثيق الحادث وتصحيح الوضع",
-          "إلقاء الدواء في النفايات دون إخبار أحد",
-          "إخبار المريض فقط"
-        ],
-        correctIndex: 1,
-        note: "الشفافية والتبليغ الفوري شرط أساسي لسلامة المريض وجودة العمل"
-      }
-    ]
+    <h2>3. Classification of Models (تصنيف النماذج)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Model Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Iconic Model</strong><br><span class="arabic" style="font-size:0.8em">نموذج أيقوني</span></td>
+                <td>Physical replica / Scale representation.</td>
+                <td>Toy car, Photograph, Globe.<br><span class="arabic" style="font-size:0.8em">مجسم سيارة، كرة أرضية</span></td>
+            </tr>
+            <tr>
+                <td><strong>Analog Model</strong><br><span class="arabic" style="font-size:0.8em">نموذج تناظري</span></td>
+                <td>Physical, but measures abstract quantity.</td>
+                <td>Thermometer, Speedometer, Clock.<br><span class="arabic" style="font-size:0.8em">ميزان حرارة، عداد سرعة</span></td>
+            </tr>
+            <tr>
+                <td><strong>Mathematical Model</strong><br><span class="arabic" style="font-size:0.8em">نموذج رياضي</span></td>
+                <td>Uses symbols and equations.</td>
+                <td>Profit = 10x - 500<br><span class="arabic" style="font-size:0.8em">المعادلات والرموز</span></td>
+            </tr>
+        </tbody>
+    </table>
 
-    const questionsWrapper = document.getElementById("questionsWrapper")
-    const scoreValue = document.getElementById("scoreValue")
-    const statusTag = document.getElementById("statusTag")
-    const submitBtn = document.getElementById("submitBtn")
-    const resetBtn = document.getElementById("resetBtn")
+    <h2>4. Data Categories (أنواع البيانات)</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="term-box">
+            <div class="term-title">Deterministic Models (نماذج حتمية)</div>
+            <p>All input data is known with <strong>certainty</strong>.</p>
+            <p style="color: #666; font-size: 0.9em;">Example: Raw material cost is fixed.</p>
+            <span class="arabic">جميع البيانات معروفة مسبقاً وبشكل مؤكد.</span>
+        </div>
+        <div class="term-box">
+            <div class="term-title">Probabilistic Models (نماذج احتمالية)</div>
+            <p>Input data is <strong>uncertain</strong> or involves risk/probability.</p>
+            <p style="color: #666; font-size: 0.9em;">Example: Future customer demand.</p>
+            <span class="arabic">البيانات غير مؤكدة وتعتمد على الاحتمالات.</span>
+        </div>
+    </div>
 
-    function renderQuestions() {
-      questionsWrapper.innerHTML = ""
-      questions.forEach((q, index) => {
-        const card = document.createElement("article")
-        card.className = "question-card"
-        card.dataset.index = index
+    <h2>5. Common Applications (Success Stories)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Organization (الشركة)</th>
+                <th>Application Area (مجال التطبيق)</th>
+                <th>Result/Benefit (النتيجة)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>United Airlines / Air NZ</strong></td>
+                <td>Crew Scheduling</td>
+                <td>Saved millions in travel costs.</td>
+            </tr>
+            <tr>
+                <td><strong>IBM</strong></td>
+                <td>Supply Chain / Inventory</td>
+                <td>Improved inventory management.</td>
+            </tr>
+            <tr>
+                <td><strong>Taco Bell</strong></td>
+                <td>Store Workforce Scheduling</td>
+                <td>Saved $13 million annually.</td>
+            </tr>
+            <tr>
+                <td><strong>AT&T</strong></td>
+                <td>Network Design</td>
+                <td>Optimized call routing.</td>
+            </tr>
+            <tr>
+                <td><strong>US Military</strong></td>
+                <td>Logistics & Supply</td>
+                <td>Efficient movement of troops.</td>
+            </tr>
+        </tbody>
+    </table>
 
-        const header = document.createElement("div")
-        header.className = "question-header"
+    <h2>6. Quantitative Analysis Terms (مصطلحات هامة)</h2>
+    <table>
+        <tbody>
+            <tr>
+                <td width="30%"><strong>Decision Variables</strong><br><span class="arabic">متغيرات القرار</span></td>
+                <td>Controllable variables (e.g., How many units to produce).<br><span class="arabic">الأشياء التي نتحكم فيها (كم ننتج؟).</span></td>
+            </tr>
+            <tr>
+                <td><strong>Objective Function</strong><br><span class="arabic">دالة الهدف</span></td>
+                <td>The goal equation (e.g., Maximize Profit or Minimize Cost).<br><span class="arabic">معادلة الهدف (تعظيم الربح أو تقليل التكلفة).</span></td>
+            </tr>
+            <tr>
+                <td><strong>Constraints</strong><br><span class="arabic">القيود</span></td>
+                <td>Limitations (e.g., Budget, Labor hours, Raw materials).<br><span class="arabic">المحدوديات (الميزانية، ساعات العمل).</span></td>
+            </tr>
+            <tr>
+                <td><strong>Feasible Region</strong><br><span class="arabic">منطقة الحل الممكن</span></td>
+                <td>The set of all possible solutions that satisfy constraints.<br><span class="arabic">جميع الحلول التي تحترم القيود.</span></td>
+            </tr>
+            <tr>
+                <td><strong>Optimal Solution</strong><br><span class="arabic">الحل الأمثل</span></td>
+                <td>The single best point in the feasible region.<br><span class="arabic">أفضل نقطة تحقق الهدف.</span></td>
+            </tr>
+        </tbody>
+    </table>
 
-        const text = document.createElement("div")
-        text.className = "question-text"
-        text.textContent = `${index + 1}. ${q.text}`
+</div>
 
-        const meta = document.createElement("div")
-        meta.className = "question-meta"
-        meta.textContent = q.type
-
-        header.appendChild(text)
-        header.appendChild(meta)
-
-        const optionsContainer = document.createElement("div")
-        optionsContainer.className = "options"
-
-        q.options.forEach((opt, optIndex) => {
-          const label = document.createElement("label")
-          label.className = "option-label"
-
-          const input = document.createElement("input")
-          input.type = "radio"
-          input.name = `q${index}`
-          input.value = optIndex
-
-          const spanText = document.createElement("span")
-          spanText.className = "option-text"
-          spanText.textContent = opt
-
-          label.appendChild(input)
-          label.appendChild(spanText)
-          optionsContainer.appendChild(label)
-        })
-
-        const footer = document.createElement("div")
-        footer.className = "question-footer"
-        footer.id = `feedback-${index}`
-        footer.textContent = `ملاحظة: ${q.note}`
-
-        card.appendChild(header)
-        card.appendChild(optionsContainer)
-        card.appendChild(footer)
-        questionsWrapper.appendChild(card)
-      })
-
-      scoreValue.textContent = `0 / ${questions.length}`
-      statusTag.textContent = "ابدأ الاختبار"
-      statusTag.className = "status-tag"
-    }
-
-    function gradeQuiz() {
-      let score = 0
-
-      questions.forEach((q, index) => {
-        const card = questionsWrapper.querySelector(`.question-card[data-index="${index}"]`)
-        const options = card.querySelectorAll(".option-label")
-        const feedback = document.getElementById(`feedback-${index}`)
-
-        options.forEach((label) => {
-          label.classList.remove("correct", "incorrect")
-        })
-
-        let selectedIndex = null
-        options.forEach((label, optIdx) => {
-          const input = label.querySelector("input")
-          if (input.checked) {
-            selectedIndex = optIdx
-          }
-        })
-
-        if (selectedIndex === q.correctIndex) {
-          score++
-        }
-
-        options.forEach((label, optIdx) => {
-          if (optIdx === q.correctIndex) {
-            label.classList.add("correct")
-          } else if (optIdx === selectedIndex && selectedIndex !== q.correctIndex) {
-            label.classList.add("incorrect")
-          }
-        })
-
-        if (feedback) {
-          feedback.classList.add("visible")
-        }
-      })
-
-      scoreValue.textContent = `${score} / ${questions.length}`
-
-      const ratio = score / questions.length
-      if (ratio >= 0.8) {
-        statusTag.textContent = "ممتاز – جاهز للمقابلة"
-        statusTag.className = "status-tag good"
-      } else if (ratio >= 0.5) {
-        statusTag.textContent = "جيد – تحتاج بعض المراجعة"
-        statusTag.className = "status-tag medium"
-      } else {
-        statusTag.textContent = "درجة ضعيفة – راجع الأسئلة مرة أخرى"
-        statusTag.className = "status-tag low"
-      }
-    }
-
-    function resetQuiz() {
-      const inputs = questionsWrapper.querySelectorAll("input[type='radio']")
-      inputs.forEach((input) => {
-        input.checked = false
-        input.disabled = false
-      })
-
-      const labels = questionsWrapper.querySelectorAll(".option-label")
-      labels.forEach((label) => {
-        label.classList.remove("correct", "incorrect")
-      })
-
-      const feedbacks = questionsWrapper.querySelectorAll(".question-footer")
-      feedbacks.forEach((fb) => fb.classList.remove("visible"))
-
-      scoreValue.textContent = `0 / ${questions.length}`
-      statusTag.textContent = "تمت إعادة الاختبار"
-      statusTag.className = "status-tag"
-    }
-
-    submitBtn.addEventListener("click", gradeQuiz)
-    resetBtn.addEventListener("click", resetQuiz)
-
-    renderQuestions()
-  </script>
 </body>
 </html>
